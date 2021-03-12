@@ -25,7 +25,7 @@ function App() {
   const classes = useStyles();
   const [ label, setLabel ] = useState(savedState.label || '');
   const [ mode, setMode ] = useState(savedState.mode || 'multi');
-  const [ required, setRequired ] = useState(savedState.required || 'false');
+  const [ required, setRequired ] = useState(savedState.required || false);
   const [ defaultValue, setDefaultValue ] = useState(savedState.defaultValue || '');
   const [ choices, setChoices ] = useState(savedState.choices || []);
   const [ displayOrder, setDisplayOrder ] = useState(savedState.displayOrder || 'alphabetical');
@@ -74,7 +74,7 @@ function App() {
 
     if (choice) {
       if (!choices.includes(choice)) {
-        setChoices([ ...choices, choice ]);
+        setChoices([ ...choices, choice ].reverse());
         setNewChoice('');
       } else {
         setnewChoiceError('This choice already exists');
@@ -99,7 +99,7 @@ function App() {
   const handleCancel = () => {
     setLabel('');
     setMode('multi');
-    setRequired('false');
+    setRequired(false);
     setDefaultValue('');
     setChoices([]);
     setDisplayOrder('alphabetical');
@@ -113,8 +113,9 @@ function App() {
       setLabelError('Field is required');
       setTimeout(() => setLabelError(''), 2000);
     }
-    if (!choices.includes(defaultValue.trim())) {
-      setChoices([ ...choices, defaultValue.trim() ]);
+
+    if (defaultValue.trim() && !choices.includes(defaultValue.trim())) {
+      setChoices([ ...choices, defaultValue.trim() ].reverse());
     }
 
     fetch('http://www.mocky.io/v2/566061f21200008e3aabd919', {
@@ -137,7 +138,7 @@ function App() {
     console.log('JSON string:', stateToJson());
   };
 
-  const stateToJson = () => JSON.stringify({ label, required, choices, displayOrder, defaultValue });
+  const stateToJson = () => JSON.stringify({ label, mode, required, choices, displayOrder, defaultValue });
 
   localStorage.setItem('fieldBuilderState', stateToJson());
 
@@ -195,7 +196,7 @@ function App() {
                 </Grid>
                 <Grid item xs={12} className={classes.formRow}>
                   <FormControlLabel
-                    control={<Checkbox name="checkedA" onChange={handleRequiredChange} color="primary" />}
+                    control={<Checkbox name="checkedA" checked={required} onChange={handleRequiredChange} color="primary" />}
                     label="A value is required"
                   />
                 </Grid>
