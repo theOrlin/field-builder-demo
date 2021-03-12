@@ -74,7 +74,7 @@ function App() {
 
     if (choice) {
       if (!choices.includes(choice)) {
-        setChoices([ ...choices, choice ].reverse());
+        setChoices([ choice, ...choices ]);
         setNewChoice('');
       } else {
         setnewChoiceError('This choice already exists');
@@ -115,7 +115,7 @@ function App() {
     }
 
     if (defaultValue.trim() && !choices.includes(defaultValue.trim())) {
-      setChoices([ ...choices, defaultValue.trim() ].reverse());
+      setChoices([ defaultValue.trim(), ...choices ]);
     }
 
     fetch('http://www.mocky.io/v2/566061f21200008e3aabd919', {
@@ -196,7 +196,9 @@ function App() {
                 </Grid>
                 <Grid item xs={12} className={classes.formRow}>
                   <FormControlLabel
-                    control={<Checkbox name="checkedA" checked={required} onChange={handleRequiredChange} color="primary" />}
+                    control={
+                      <Checkbox name="checkedA" checked={required} onChange={handleRequiredChange} color="primary" />
+                    }
                     label="A value is required"
                   />
                 </Grid>
